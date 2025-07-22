@@ -21,8 +21,8 @@ data "aws_subnets" "default_public_subnets" {
 }
 
 # Security Group
-resource "aws_security_group" "web_sg" {
-  name        = "web-sg"
+resource "aws_security_group" "web_sg-v2" {
+  name        = "web-sg-v2"
   description = "Allow HTTP inbound"
   vpc_id      = data.aws_vpc.default_vpc.id
 
@@ -43,7 +43,7 @@ resource "aws_security_group" "web_sg" {
   }
 
   tags = {
-    Name = "web-sg"
+    Name = "web-sg-v2"
   }
 }
 
