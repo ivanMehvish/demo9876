@@ -3,11 +3,11 @@ pipeline {
 
   environment {
     AWS_REGION = 'ap-south-1'
-    TF_DIR     = '.'
+    TF_WORKDIR = '.'
   }
 
   stages {
-    stage('Checkout') {
+    stage('Checkout Code') {
       steps {
         checkout scm
       }
@@ -15,15 +15,16 @@ pipeline {
 
     stage('Terraform Init') {
       steps {
-        dir(TF_DIR) {
-          sh 'terraform init'
+        dir(env.TF_WORKDIR) {
+          sh 'terraform init -upgrade' // ensures provider lock updates to v6.x :contentReference[oaicite:1]{index=1}
         }
       }
     }
 
-    stage('Terraform Plan') {
+    stage('Terraform Validate & Plan') {
       steps {
-        dir(TF_DIR) {
+        dir(env.TF_WORKDIR) {
+          sh 'terraform validate'
           sh 'terraform plan -out=tfplan'
         }
       }
@@ -31,7 +32,7 @@ pipeline {
 
     stage('Terraform Apply') {
       steps {
-        dir(TF_DIR) {
+        dir(env.TF_WORKDIR) {
           sh 'terraform apply -auto-approve tfplan'
         }
       }
@@ -39,11 +40,15 @@ pipeline {
   }
 
   post {
+    always {
+      cleanWs()
+      echo 'Workspace cleaned'
+    }
     success {
-      echo '✅ Terraform applied successfully!'
+      echo '🎉 Terraform applied successfully!'
     }
     failure {
-      echo '❌ Pipeline failed. Check logs above.'
+      echo '❌ Build failed — check logs'
     }
   }
 }
