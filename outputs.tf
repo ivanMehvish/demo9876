@@ -1,4 +1,4 @@
 output "alb_dns" {
-  description = "ALB DNS name"
-  value       = aws_lb.alb.dns_name
+  description = "ALB public DNS"
+  value       = aws_lb.web_alb.dns_name
 }
