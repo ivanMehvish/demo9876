@@ -53,7 +53,7 @@ resource "aws_instance" "web_server" {
   ami                    = var.ami
   instance_type          = "t3.micro"
   subnet_id              = data.aws_subnets.default_public_subnets.ids[count.index]
-  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  vpc_security_group_ids = [aws_security_group.web_sg-v2.id]
 
   user_data = <<-EOF
     #!/bin/bash
@@ -74,7 +74,7 @@ resource "aws_lb" "web_alb" {
   name               = "web-alb"
   load_balancer_type = "application"
   subnets            = data.aws_subnets.default_public_subnets.ids
-  security_groups    = [aws_security_group.web_sg.id]
+  security_groups    = [aws_security_group.web_sg-v2.id]
 
   tags = {
     Name = "web-alb"
