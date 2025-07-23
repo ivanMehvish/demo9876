@@ -2,6 +2,8 @@
 - name: demoplaybook setup
   hosts: webservers
   become: yes
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   tasks:
     - name: Install httpd
       ansible.builtin.yum: 
